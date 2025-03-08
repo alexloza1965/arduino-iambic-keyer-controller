@@ -4,11 +4,11 @@
 //  VER 2025.03.08
 
 
-#define DOT 3              // D5 - вход Точка / Dot / Dit - можно поменять местами
-#define DASH 2             // D6 - вход Тире / Dash / Dah - можно поменять местами
+#define DOT 3              // D3 - вход Точка / Dot / Dit - можно поменять местами
+#define DASH 2             // D2 - вход Тире / Dash / Dah - можно поменять местами
 
 #define OUT 4              // D4 - выход ключа Key OUT
-#define TX 5               // D2 - выход TX
+#define TX 5               // D5 - выход TX
 #define YEL 11             // D11 - желтый светодиод Key OUT
 #define RED 12             // D12 - красный светодиод TX
 #define BUZZER 8           // D8 - выход звукового сигнала самоконтроля
