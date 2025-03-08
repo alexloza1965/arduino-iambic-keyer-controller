@@ -8,7 +8,8 @@ Arduino based Iambic B / Iambic A keyer - radio telegraph manipulator controller
 D3 - вход Точка.<br>
 D2 - вход Тире.<br>
 <i>Примечание: Точки и тире замыкать на землю. Для инверсии поменять ножки местами.</i><br>
-D4 - выход ключа Key OUT, D5 - выход TX.<br>
+D4 - выход ключа Key OUT.<br>
+D5 - выход TX.<br>
 D11 - желтый светодиод Key OUT.<br>
 D12 - красный светодиод TX.<br>
 D8 - выход звукового сигнала самоконтроля.<br>
