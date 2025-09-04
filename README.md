@@ -40,4 +40,4 @@ dtConst = 1E3 * 60;  // Задержка первого знака. Cигнал 
 KeyerYambic10.svg – принципальная схема манипулятора<br>
 Keyer_Yambic_009.ino – программа для Arduino<br>
 KeyerYambic11.svg – последняя версия. принципальная схема манипулятора<br>
-Keyer_Yambic_009_1.ino – последняя версия программы для Arduino<br>
+Keyer_Yambic_009_2.ino – последняя версия программы для Arduino<br>
