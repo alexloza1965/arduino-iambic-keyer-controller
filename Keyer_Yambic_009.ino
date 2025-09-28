@@ -1,11 +1,12 @@
 
 //  Автоматический телеграфный ключ Iambic B, Iambic A
 //  Arduino Nano (или любая другая плата)
-//  VER 2025.03.08
+//  VER 2025.08.25
 
 
 #define DOT 3              // D3 - вход Точка / Dot / Dit - можно поменять местами
 #define DASH 2             // D2 - вход Тире / Dash / Dah - можно поменять местами
+#define TXOFF 7            // D7 - вход TX OFF
 
 #define OUT 4              // D4 - выход ключа Key OUT
 #define TX 5               // D5 - выход TX
@@ -24,7 +25,7 @@ long t0, t1, t2, t3, t4, deltaT;
 
 unsigned long ton, zumTon, spd, ddot, ddash, rat, pause, dt0, dtConst;
 
-boolean out, tx, yaType;
+boolean out, tx, yaType, txOff;
 
 boolean dot, dash, dotBlock, dashBlock, dotMem, dashMem;
 
@@ -40,6 +41,7 @@ void setup() {
   pinMode(SPEED, INPUT);
   pinMode(DOT, INPUT_PULLUP);         // Подтянутый к питанию вход
   pinMode(DASH, INPUT_PULLUP);        // Подтянутый к питанию вход
+  pinMode(TXOFF, INPUT_PULLUP);       // Подтянутый к питанию вход
   pinMode(OUT, OUTPUT);
   pinMode(TX, OUTPUT);
   pinMode(RED, OUTPUT);
@@ -60,7 +62,7 @@ void setup() {
   ddot = 1E3 * 50;            // Начальная длительность точки, 50 мс (~30 WPM)
   ddash = rat * ddot;         // Начальная длительность тире
   pause = 1E6 * 0.8;          // Длительность сигнала TX после завершения манипуляции, 0.8 сек
-  dtConst = 1E3 * 50;         // Задержка первого знака. Cигнал TX опережает Key OUT на 50 мс
+  dtConst = 1E3 * 60;         // Задержка первого знака. Cигнал TX опережает Key OUT на 60 мс. Что бы внешний УМ успел переключиться
   dt0 = dtConst;              // Задержка первого знака. Рабочая переменная
   zumTon = 1000;              // Начальный тон зуммера в Гц
 
@@ -166,11 +168,14 @@ void loop() {
 
 //  Выводим сформированные сигналы
 
-  digitalWrite(OUT, out);
+  txOff = digitalRead(TXOFF);
+
+  digitalWrite(OUT, out && txOff);
   digitalWrite(YEL, out);
-  digitalWrite(TX, tx);
-  digitalWrite(RED, tx);
   digitalWrite(LED_BUILTIN, out);
+
+  digitalWrite(TX, tx && txOff);
+  digitalWrite(RED, tx && txOff);
 
 
 
@@ -192,10 +197,21 @@ void loop() {
   spd = 1023 - analogRead(SPEED);                 // Прямой потенциометр
 // spd = analogRead(SPEED);                       // Инверсный потенциометр
 
+// +44: 36-20 WPS;  +40: 40-22 WPS;  +35: 45-23 WPS;  +32: 50-25 WPS
+//  ddot = 1E3 * ( spd / 32 + 40 );
+
+ddot = 1E3 * ( (spd >> 5) + 30 );
+
+  if  (spd >=0 && spd < 512) ddot = 1E3 * ( (spd >> 5) + 30 );
+  if  (spd >=512 && spd < 768) ddot = 1E3 * ( (spd >> 3) - 18 );
+  if  (spd >=768 && spd < 1024) ddot = 1E3 * ( (spd >> 1) - 306 );
+
+/*
   if (spd >=0   && spd < 256)  ddot = 1E3 * ( 24  + ( spd - 0 ) / 32 );
   if (spd >=256 && spd < 512)  ddot = 1E3 * ( 32  + ( spd - 256 ) / 16 );
   if (spd >=512 && spd < 768)  ddot = 1E3 * ( 48  + ( spd - 512 ) / 4 );
   if (spd >=768 && spd < 1024) ddot = 1E3 * ( 112 + ( spd - 768 ) / 2 );
+*/
 
   ddash = rat * ddot;                             // Вычисляем длительность тире
 
